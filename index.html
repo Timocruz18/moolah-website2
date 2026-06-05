@@ -8,12 +8,11 @@
 </head>
 <body>
 
-    <!-- 1. LANDING PAGE -->
     <div id="main-page" class="app-container">
         <header class="navbar">
             <h1 class="logo">MOOLAH</h1>
             <div class="auth-buttons">
-                <button onclick="showPage('signin-page')" class="btn-signin">Sign In</button>
+                <button onclick="showPage('signin-page')" class="btn-signin">Sign Up</button>
                 <button onclick="showPage('login-page')" class="btn-login">Log In</button>
             </div>
         </header>
@@ -24,189 +23,117 @@
             <button onclick="showPage('signin-page')" class="btn-cta">Start Investing</button>
         </section>
 
-        <section class="stats">
-            <div class="card">
-                <h3>20% ROI</h3>
-                <p>Potential monthly returns</p>
-            </div>
-            <div class="card">
-                <h3>Secure</h3>
-                <p>Encrypted transactions</p>
-            </div>
-        </section>
-        
         <footer>
             <p>© 2026 Moolah. All Rights Reserved.</p>
         </footer>
     </div>
 
-    <!-- 2. LOG IN SCREEN -->
     <div id="login-page" class="app-container hidden">
         <div class="brand-header"><h1 class="logo center">MOOLAH</h1></div>
         <div class="form-box">
             <h2>Log In</h2>
             <p class="subtitle">Sign in to your account to continue</p>
+            
+            <div id="login-alert" class="alert-box hidden"></div>
+
             <div class="input-group">
                 <label>Phone</label>
                 <div class="input-wrapper">
-                    <span class="prefix">+234</span>
-                    <input type="tel" placeholder="Enter your phone number">
+                    <input type="tel" id="login-phone" placeholder="Enter your phone number">
                 </div>
             </div>
             <div class="input-group">
                 <label>Password</label>
-                <div class="input-wrapper"><input type="password" placeholder="Enter your password"></div>
-                <a href="#" class="forgot-link">Forgot password?</a>
+                <div class="input-wrapper"><input type="password" id="login-pass" placeholder="Enter your password"></div>
             </div>
-            <button onclick="showPage('dashboard-page')" class="btn-submit">Log In</button>
+            <button onclick="handleLogin()" class="btn-submit">Log In</button>
             <p class="switch-text">Don't have an account? <span onclick="showPage('signin-page')">Sign Up</span></p>
         </div>
     </div>
 
-    <!-- 3. SIGN UP SCREEN -->
     <div id="signin-page" class="app-container hidden">
         <div class="brand-header"><h1 class="logo center">MOOLAH</h1></div>
         <div class="form-box">
             <h2>Create Account</h2>
             <p class="subtitle">Sign up to get started</p>
+            
+            <div id="reg-alert" class="alert-box hidden"></div>
+
+            <div class="input-group">
+                <label>Select Your Country</label>
+                <select id="countrySelect" class="input-wrapper" required>
+                    <option value="" disabled selected>Choose your country...</option>
+                    <option value="NGN" data-rate="1360">Nigeria (₦)</option>
+                    <option value="GHS" data-rate="11.8">Ghana (₵)</option>
+                    <option value="KES" data-rate="129.4">Kenya (Ksh)</option>
+                    <option value="ZAR" data-rate="18.5">South Africa (R)</option>
+                </select>
+            </div>
+
             <div class="input-group">
                 <label>Phone</label>
                 <div class="input-wrapper">
-                    <span class="prefix">+234</span>
-                    <input type="tel" placeholder="Enter your phone number">
+                    <input type="tel" id="reg-phone" placeholder="Enter your phone number">
                 </div>
             </div>
             <div class="input-group">
                 <label>Password</label>
-                <div class="input-wrapper"><input type="password" placeholder="Minimum 6 characters"></div>
+                <div class="input-wrapper"><input type="password" id="reg-pass" placeholder="Minimum 6 characters"></div>
             </div>
             <div class="input-group">
-                <label>Confirm Password</label>
-                <div class="input-wrapper"><input type="password" placeholder="Confirm your password"></div>
+                <label>Invite Code <span class="required-star">*</span></label>
+                <div class="input-wrapper"><input type="text" id="reg-invite" placeholder="Referral code is required"></div>
             </div>
-            <div class="input-group">
-                <label>Invite Code <span>(optional)</span></label>
-                <div class="input-wrapper"><input type="text" placeholder="Enter 8-character code"></div>
-            </div>
-            <button onclick="showPage('dashboard-page')" class="btn-submit">Sign Up</button>
+            <button onclick="handleRegister()" class="btn-submit">Sign Up</button>
             <p class="switch-text">Already have an account? <span onclick="showPage('login-page')">Log In</span></p>
         </div>
     </div>
 
-    <!-- 4. PREMIUM INVESTOR DASHBOARD (MATCHING FILE 268138.JPG) -->
     <div id="dashboard-page" class="app-container dashboard-view hidden">
-        
-        <!-- Live Ticker Tape -->
-        <div class="ticker-tape">
-            <span class="ticker-live">● LIVE</span>
-            <div class="ticker-text-wrap">
-                <p class="ticker-content">₦50,000.00 invested in Plan V1... ₦10,000.00 withdrawn successfully... ₦25,000.00 invested in Plan V2...</p>
-            </div>
-        </div>
-
-        <!-- App Branding Bar -->
         <header class="dashboard-header">
             <h1 class="logo-brand">MOOLAH</h1>
-            <div class="header-right">
-                <span class="vip-badge">👑 VIP0</span>
-                <div class="icon-btn-circle">🔔</div>
-                <div class="icon-btn-circleprofile">👤</div>
-            </div>
         </header>
 
-        <!-- Greeting -->
-        <div class="user-greeting-row">
-            <p class="greeting-text">Good Evening</p>
-            <span class="eye-icon">👁️</span>
-        </div>
-
-        <!-- Main Giant Balance Display -->
         <div class="main-balance-box">
-            <h2 class="balance-amount">₦2,314.80</h2>
+            <p>Total Balance</p>
+            <h2 class="balance-amount" id="dashboard-balance">0.00</h2>
         </div>
 
-        <!-- Earnings Split Row -->
-        <div class="earnings-summary-row">
-            <div class="earning-stat-col">
-                <span class="stat-label">TODAY'S EARNINGS</span>
-                <span class="stat-value green-text">+ ₦180.00 ▲</span>
-            </div>
-            <div class="earning-stat-col">
-                <span class="stat-label">TOTAL EARNINGS</span>
-                <span class="stat-value gold-text">+ ₦6,480.00</span>
-            </div>
-        </div>
-
-        <!-- Action Button Strip -->
-        <div class="quick-actions-strip">
-            <button class="action-pill-btn"><span class="blue-plus">+</span> Recharge</button>
-            <button class="action-pill-btn">↑ Withdraw</button>
-            <button class="action-pill-btn gold-border">📅 Check In</button>
-        </div>
-
-        <!-- Floating Support Headset Button -->
-        <div class="floating-headset-btn">🎧</div>
-
-        <!-- Modern 6-Icon Grid Area -->
         <div class="menu-utilities-grid">
-            <div class="grid-item-card">
-                <div class="grid-icon-circle telegram-blue">✈️</div>
-                <p>Telegram</p>
-            </div>
-            <div class="grid-item-card">
-                <div class="grid-icon-circle whatsapp-green">💬</div>
-                <p>WhatsApp</p>
-            </div>
-            <div class="grid-item-card">
+            <div class="grid-item-card" onclick="checkInviteEligibility()">
                 <div class="grid-icon-circle team-blue">👥</div>
-                <p>My Team</p>
-            </div>
-            <div class="grid-item-card">
-                <div class="grid-icon-circle community-red">🧑‍🤝‍🧑</div>
-                <p>Community</p>
-            </div>
-            <div class="grid-item-card">
-                <div class="grid-icon-circle activities-orange">🏠</div>
-                <p>Activities</p>
-            </div>
-            <div class="grid-item-card">
-                <div class="grid-icon-circle assets-blue">📊</div>
-                <p>My Assets</p>
+                <p>My Invite Code</p>
             </div>
         </div>
+        
+        <div id="invite-code-display" class="alert-box hidden"></div>
 
-        <!-- Streak Reward Card -->
-        <div class="streak-tracker-card">
-            <div class="streak-flame">🔥</div>
-            <h4 class="streak-count">0</h4>
-            <p class="streak-label">DAY STREAK</p>
-            <span class="streak-bonus">+₦50</span>
-        </div>
-
-        <!-- Fixed Bottom App Navigation Bar -->
         <nav class="bottom-app-navbar">
-            <div class="bottom-nav-item active">
-                <span class="nav-icon">🏠</span>
+            <div class="bottom-nav-item active" onclick="showPage('dashboard-page')">
                 <span class="nav-label">Home</span>
             </div>
-            <div class="bottom-nav-item">
-                <span class="nav-icon">🛍️</span>
+            <div class="bottom-nav-item" onclick="showPage('products-page'); loadProducts();">
                 <span class="nav-label">Products</span>
             </div>
-            <div class="bottom-nav-item">
-                <span class="nav-icon">🌍</span>
-                <span class="nav-label">Community</span>
+        </nav>
+    </div>
+
+    <div id="products-page" class="app-container dashboard-view hidden">
+        <header class="dashboard-header">
+            <h1 class="logo-brand">TESLA FLEET</h1>
+        </header>
+
+        <div class="product-list" id="product-container">
             </div>
-            <div class="bottom-nav-item">
-                <span class="nav-icon">💳</span>
-                <span class="nav-label">Recharge</span>
+
+        <nav class="bottom-app-navbar">
+            <div class="bottom-nav-item" onclick="showPage('dashboard-page')">
+                <span class="nav-label">Home</span>
             </div>
-            <div class="bottom-nav-item">
-                <span class="nav-icon">👤</span>
-                <span class="nav-label">Profile</span>
+            <div class="bottom-nav-item active">
+                <span class="nav-label">Products</span>
             </div>
         </nav>
-
     </div>
 
     <script src="./script.js"></script>
