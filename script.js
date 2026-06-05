@@ -1,16 +1,16 @@
-// Function to switch screens instantly
+// Navigation router for views
 function showPage(pageId) {
-    // Hide all containers
+    // Hide all view panels completely
     document.getElementById('main-page').classList.add('hidden');
     document.getElementById('login-page').classList.add('hidden');
     document.getElementById('signin-page').classList.add('hidden');
+    document.getElementById('dashboard-page').classList.add('hidden');
 
-    // Show the selected page container
+    // Reveal the target page panel
     document.getElementById(pageId).classList.remove('hidden');
     
-    // Scroll smoothly back to the top of the mobile window
+    // Bounce user windows directly up to the top view smoothly
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Log confirmation checking connection
-console.log("Moolah navigation controller loaded successfully.");
+console.log("Moolah application router initialized cleanly.");
