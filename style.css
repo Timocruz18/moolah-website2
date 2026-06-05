@@ -1,154 +1,328 @@
-// Global state
-let currentUser = null;
-
-// Page Navigation
-function showPage(pageId) {
-    document.querySelectorAll('.app-container').forEach(page => page.classList.add('hidden'));
-    document.getElementById(pageId).classList.remove('hidden');
+/* =========================================
+   1. GLOBAL RESET & VARIABLES
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-// Show alert messages
-function showAlert(elementId, message, isError = true) {
-    const alertBox = document.getElementById(elementId);
-    alertBox.innerText = message;
-    alertBox.style.color = isError ? "red" : "green";
-    alertBox.classList.remove('hidden');
-    setTimeout(() => alertBox.classList.add('hidden'), 4000);
+:root {
+    --primary-color: #0d6efd;     /* Moolah Blue */
+    --primary-dark: #0a58ca;
+    --bg-color: #f8f9fa;          
+    --card-bg: #ffffff;
+    --text-dark: #212529;
+    --text-gray: #6c757d;
+    --border-color: #dee2e6;
+    --success-color: #198754;
+    --danger-color: #dc3545;
 }
 
-// 1. REGISTRATION LOGIC (Duplicate Check & $4 Conversion)
-function handleRegister() {
-    const phone = document.getElementById('reg-phone').value;
-    const pass = document.getElementById('reg-pass').value;
-    const invite = document.getElementById('reg-invite').value;
-    const countrySelect = document.getElementById('countrySelect');
-
-    if (!phone || !pass || !invite || !countrySelect.value) {
-        return showAlert('reg-alert', 'Please fill all fields and select a country.');
-    }
-
-    // Retrieve existing users database from localStorage
-    let usersDb = JSON.parse(localStorage.getItem('moolahUsers')) || {};
-
-    // CHECK IF PHONE NUMBER ALREADY EXISTS
-    if (usersDb[phone]) {
-        return showAlert('reg-alert', 'These credentials are already registered. Please Log In.');
-    }
-
-    // $4 Sign-up Bonus Conversion
-    const exchangeRate = parseFloat(countrySelect.options[countrySelect.selectedIndex].getAttribute('data-rate'));
-    const currency = countrySelect.value;
-    const startingBalance = 4 * exchangeRate; // $4 converted to local currency
-
-    // Create new user profile
-    const newUser = {
-        phone: phone,
-        password: pass,
-        currency: currency,
-        exchangeRate: exchangeRate,
-        balance: startingBalance,
-        hasPurchasedProduct: false, // Required for invite code
-        inviteCode: generateRandomCode()
-    };
-
-    // Save to database
-    usersDb[phone] = newUser;
-    localStorage.setItem('moolahUsers', JSON.stringify(usersDb));
-
-    showAlert('reg-alert', 'Registration successful!', false);
-    setTimeout(() => showPage('login-page'), 1500);
+body {
+    background-color: #e9ecef; 
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
 }
 
-// 2. LOGIN LOGIC
-function handleLogin() {
-    const phone = document.getElementById('login-phone').value;
-    const pass = document.getElementById('login-pass').value;
-    
-    let usersDb = JSON.parse(localStorage.getItem('moolahUsers')) || {};
-
-    if (usersDb[phone] && usersDb[phone].password === pass) {
-        currentUser = usersDb[phone];
-        updateDashboard();
-        showPage('dashboard-page');
-    } else {
-        showAlert('login-alert', 'Invalid phone number or password.');
-    }
+/* =========================================
+   2. MOBILE FRAME
+   ========================================= */
+.app-container {
+    width: 100%;
+    max-width: 414px; 
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    padding-bottom: 90px; /* Leaves space for fixed bottom navigation */
 }
 
-// 3. INVITE CODE LOGIC (Must purchase first)
-function checkInviteEligibility() {
-    const inviteDisplay = document.getElementById('invite-code-display');
-    
-    if (currentUser.hasPurchasedProduct) {
-        inviteDisplay.innerText = `Your Invite Code: ${currentUser.inviteCode}`;
-        inviteDisplay.style.color = "green";
-    } else {
-        inviteDisplay.innerText = `LOCKED: You must buy a product to generate an invite code.`;
-        inviteDisplay.style.color = "red";
-    }
-    inviteDisplay.classList.remove('hidden');
+.hidden {
+    display: none !important;
 }
 
-// 4. DYNAMIC TESLA PRODUCTS
-function loadProducts() {
-    if (!currentUser) return;
-    
-    const container = document.getElementById('product-container');
-    const rate = currentUser.exchangeRate;
-    const currency = currentUser.currency;
-
-    // Product definitions in USD
-    const products = [
-        { name: "Tesla Model 3 Plan", costUSD: 3, dailyUSD: 1.07, totalUSD: 15, duration: "14 Days" }
-    ];
-
-    container.innerHTML = ''; // Clear existing
-
-    products.forEach((prod, index) => {
-        // Convert USD to local currency
-        const localCost = (prod.costUSD * rate).toFixed(2);
-        const localDaily = (prod.dailyUSD * rate).toFixed(2);
-        const localTotal = (prod.totalUSD * rate).toFixed(2);
-
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <h3>${prod.name}</h3>
-            <p><strong>Price:</strong> ${localCost} ${currency}</p>
-            <p><strong>Daily Return:</strong> ${localDaily} ${currency}</p>
-            <p><strong>Total Return:</strong> ${localTotal} ${currency}</p>
-            <p><strong>Duration:</strong> ${prod.duration}</p>
-            <button onclick="buyProduct(${prod.costUSD})" class="btn-submit" style="margin-top:10px;">Buy Now</button>
-        `;
-        container.appendChild(card);
-    });
+/* =========================================
+   3. HEADERS, LOGOS & HERO
+   ========================================= */
+.navbar, .dashboard-header, .brand-header {
+    background-color: var(--primary-color);
+    padding: 15px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-// 5. PURCHASE LOGIC
-function buyProduct(costUSD) {
-    const localCost = costUSD * currentUser.exchangeRate;
-
-    if (currentUser.balance >= localCost) {
-        currentUser.balance -= localCost;
-        currentUser.hasPurchasedProduct = true; // Unlocks invite code
-        
-        // Update database
-        let usersDb = JSON.parse(localStorage.getItem('moolahUsers'));
-        usersDb[currentUser.phone] = currentUser;
-        localStorage.setItem('moolahUsers', JSON.stringify(usersDb));
-
-        updateDashboard();
-        alert('Product purchased successfully! Your invite code is now unlocked.');
-        showPage('dashboard-page');
-    } else {
-        alert('Insufficient balance. Please recharge.');
-    }
+.brand-header {
+    justify-content: center;
+    padding: 30px 20px;
 }
 
-function updateDashboard() {
-    document.getElementById('dashboard-balance').innerText = `${currentUser.balance.toFixed(2)} ${currentUser.currency}`;
+.logo, .logo-brand {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1px;
 }
 
-function generateRandomCode() {
-    return Math.random().toString(36).substring(2, 8).toUpperCase();
+.center { text-align: center; }
+
+.hero {
+    padding: 40px 20px;
+    text-align: center;
+    background: white;
+    margin-bottom: 15px;
+}
+.hero h2 { margin-bottom: 10px; color: var(--text-dark); }
+.hero p { color: var(--text-gray); font-size: 14px; }
+
+/* =========================================
+   4. LIVE TICKER TAPE INTERFACE
+   ========================================= */
+.ticker-tape {
+    background-color: #111;
+    color: #fff;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    gap: 10px;
+}
+
+.ticker-live {
+    color: #ff3333;
+    font-weight: bold;
+    animation: blink 1.5s infinite;
+}
+
+.ticker-text-wrap {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.ticker-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: ticker 20s linear infinite;
+    color: #00ffcc;
+}
+
+@keyframes ticker {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+}
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* =========================================
+   5. FORM STYLING (Auth Screens)
+   ========================================= */
+.form-box {
+    padding: 30px 20px;
+    background-color: white;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    margin-top: -15px;
+}
+
+.subtitle { color: var(--text-gray); margin-bottom: 25px; font-size: 14px; }
+.input-group { margin-bottom: 18px; }
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.required-star { color: var(--danger-color); }
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #f1f3f5;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0 12px;
+}
+
+.input-wrapper input, .input-wrapper select {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    outline: none;
+}
+
+.switch-text {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--text-gray);
+}
+.switch-text span {
+    color: var(--primary-color);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* =========================================
+   6. MAIN DASHBOARD UTILITIES
+   ========================================= */
+.user-greeting-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px 5px 20px;
+    align-items: center;
+}
+.greeting-text { font-weight: 600; color: var(--text-dark); }
+
+.main-balance-box {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    margin: 15px 20px;
+    padding: 25px 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+.balance-amount { font-size: 32px; font-weight: 700; margin-top: 5px; }
+
+/* Earnings Row */
+.earnings-summary-row {
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    margin: 0 20px 15px 20px;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+.earning-stat-col {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+}
+.stat-label { font-size: 11px; color: var(--text-gray); font-weight: 600; }
+.stat-value { font-size: 15px; font-weight: 700; color: var(--text-dark); margin-top: 4px; }
+
+/* Buttons Row */
+.quick-actions-strip {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px 20px 20px;
+    gap: 10px;
+}
+.action-pill-btn {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    font-size: 13px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+/* Utilities Grid Layout */
+.menu-utilities-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Fits 3 items neatly per row */
+    gap: 12px;
+    padding: 0 20px 20px 20px;
+}
+.grid-item-card {
+    background-color: var(--card-bg);
+    padding: 15px 5px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+.grid-icon-circle {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+/* =========================================
+   7. STREAK, PRODUCTS, & UTILITY CARDS
+   ========================================= */
+.streak-tracker-card {
+    background: #fff;
+    margin: 0 20px 20px 20px;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid var(--border-color);
+}
+
+.product-list {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+.card h3 { color: var(--primary-dark); margin-bottom: 12px; }
+.card p { margin-bottom: 6px; color: var(--text-dark); font-size: 14px; }
+
+/* =========================================
+   8. SYSTEM BUTTONS & ALERTS
+   ========================================= */
+button, .btn-submit {
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    border-radius: 8px;
+}
+.btn-submit {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 14px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+.alert-box {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* =========================================
+   9. FIXED APP NAVIGATION BAR
+   ========================================= */
+.bottom-app-navbar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 414px; /* Matches mobile view boundary width */
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid var(--border-color);
+    z-index: 999;
+}
+.bottom-nav-item {
+    text-align: center;
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+.bottom-nav-item.active {
+    color: var(--primary-color);
 }
