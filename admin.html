@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moolah Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header class="navbar">
+    <h1 class="logo">MOOLAH ADMIN</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Admin Control Panel</h2>
+    <p>Manage users, investments, and platform overview</p>
+  </section>
+
+  <section class="stats">
+    <div class="box">
+      <h3>Total Users</h3>
+      <p>1,245</p>
+    </div>
+
+    <div class="box">
+      <h3>Total Deposits</h3>
+      <p>$58,320</p>
+    </div>
+
+    <div class="box">
+      <h3>Pending Withdrawals</h3>
+      <p>$4,120</p>
+    </div>
+  </section>
+
+  <section class="dashboard">
+    <h2>Quick Actions</h2>
+
+    <div class="card">
+      <p>Approve Investment</p>
+      <button onclick="approveAction()">Approve</button>
+    </div>
+
+    <div class="card">
+      <p>Reject Request</p>
+      <button onclick="rejectAction()">Reject</button>
+    </div>
+
+    <div class="card">
+      <p>System Status</p>
+      <button onclick="systemStatus()">Check</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>Admin Panel - Moolah © 2026</p>
+  </footer>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
