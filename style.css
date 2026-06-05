@@ -1,197 +1,249 @@
-/* ==========================================================================
-   1. BASE STYLES & LAYOUT RESET
-   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-    background-color: #030816;
+    background: radial-gradient(circle at top, #061535 0%, #020714 100%);
     color: #ffffff;
-    line-height: 1.6;
-    padding-bottom: 40px;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
 }
 
-/* ==========================================================================
-   2. NAVIGATION BAR
-   ========================================================================== */
+/* App View Containers */
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Navigation */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    background-color: #061026;
-    border-bottom: 1px solid #102244;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    padding: 10px 0 25px 0;
 }
 
 .logo {
-    color: #00b047;
-    font-size: 1.5rem;
+    color: #ffffff;
+    font-size: 1.6rem;
     font-weight: 800;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
-.navbar nav {
-    display: flex;
-    gap: 15px;
+.logo.center {
+    text-align: center;
+    width: 100%;
+    margin: 40px 0 20px 0;
 }
 
-.navbar nav a {
-    color: #cbd5e1;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color 0.2s ease;
-    padding: 5px 8px;
-    border-radius: 4px;
-}
-
-.navbar nav a:active {
-    color: #00b047;
-    background-color: #102244;
-}
-
-/* ==========================================================================
-   3. AUTHENTICATION BUTTONS
-   ========================================================================== */
 .auth-buttons {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
-.auth-buttons a {
-    text-decoration: none;
-    font-size: 0.9rem;
+.auth-buttons button {
+    border: none;
+    font-size: 0.85rem;
     font-weight: 600;
-    padding: 8px 18px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    text-align: center;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
 }
 
 .btn-signin {
-    color: #cbd5e1;
-    border: 1px solid #102244;
-}
-
-.btn-signin:active {
-    background-color: #102244;
+    background-color: transparent;
     color: #ffffff;
+    border: 1px solid #1e293b;
 }
 
 .btn-login {
-    background-color: #00b047;
+    background-color: #0052ec;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 176, 71, 0.2);
 }
 
-.btn-login:active {
-    transform: scale(0.95);
-    background-color: #008f39;
-}
-
-/* ==========================================================================
-   4. HERO SECTIONS & CARDS
-   ========================================================================== */
+/* Content Elements */
 .hero {
     text-align: center;
-    padding: 60px 20px;
-    background: radial-gradient(circle at top, #0a1931 0%, #030816 100%);
+    padding: 40px 10px;
 }
 
 .hero h2 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    letter-spacing: -0.5px;
+    font-size: 2rem;
+    margin-bottom: 12px;
 }
 
 .hero p {
     color: #94a3b8;
-    font-size: 1rem;
-    max-width: 500px;
-    margin: 0 auto 30px auto;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
 }
 
-.hero button {
-    background-color: #00b047;
-    color: #ffffff;
+.btn-cta {
+    background-color: #0052ec;
+    color: white;
     border: none;
-    padding: 14px 32px;
+    padding: 14px 28px;
     font-size: 1rem;
     font-weight: 600;
     border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 176, 71, 0.4);
-    transition: transform 0.1s ease, background-color 0.2s ease;
+    width: 100%;
 }
 
-.hero button:active {
-    transform: scale(0.96);
-    background-color: #008f39;
-}
-
+/* Cards & Layout Lists */
 .stats, .dashboard {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
 }
 
-.stats h2, .dashboard h2 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    color: #f8fafc;
+.dashboard h2 {
+    font-size: 1.2rem;
+    margin: 10px 0 5px 0;
 }
 
-.box, .card {
-    background-color: #061026;
-    border: 1px solid #102244;
+.card {
+    background-color: rgba(22, 32, 59, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 16px;
+    border-radius: 16px;
+}
+
+.card.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card h3 {
+    font-size: 1.2rem;
+}
+
+.card p {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+/* Forms UI Styling (Matching your Reference Photos) */
+.form-box {
+    background-color: rgba(22, 32, 59, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 24px;
     padding: 24px;
+    width: 100%;
+}
+
+.form-box h2 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.form-box .subtitle {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.input-group label span {
+    color: #64748b;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #111827;
+    border: 1px solid #2d3748;
     border-radius: 12px;
+    padding: 0 14px;
+    height: 50px;
 }
 
-.box h3, .card h3 {
-    color: #00b047;
-    font-size: 1.6rem;
-    margin-bottom: 5px;
+.input-wrapper input {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    height: 100%;
+    font-size: 0.95rem;
+    outline: none;
 }
 
-.box p, .card p {
+.prefix {
     color: #94a3b8;
     font-size: 0.95rem;
+    margin-right: 10px;
+    padding-right: 10px;
+    border-right: 1px solid #2d3748;
+}
+
+.forgot-link {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.85rem;
+    text-align: right;
+    margin-top: 6px;
+}
+
+.btn-submit {
+    background-color: #0052ec;
+    color: white;
+    border: none;
+    height: 50px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.switch-text {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-top: 20px;
+}
+
+.switch-text span {
+    color: #0052ec;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 footer {
     text-align: center;
-    padding: 40px 20px 20px 20px;
-    color: #64748b;
-    font-size: 0.85rem;
-    border-top: 1px solid #061026;
-    margin-top: 40px;
+    padding: 30px 0;
+    color: #475569;
+    font-size: 0.8rem;
 }
 
-/* ==========================================================================
-   5. MOBILE SCREEN OPTIMIZATION
-   ========================================================================== */
-@media (max-width: 600px) {
-    .navbar {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-    }
-    
-    .auth-buttons {
-        width: 100%;
-        justify-content: center;
-    }
+/* Click/Tap Interactions */
+button:active, .btn-submit:active {
+    transform: scale(0.98);
+    opacity: 0.9;
 }
